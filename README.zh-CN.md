@@ -1,4 +1,4 @@
-# egg-knex
+# @joyu/egg-knex
 
 [![NPM version][npm-image]][npm-url]
 [![Known Vulnerabilities][snyk-image]][snyk-url]

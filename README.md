@@ -1,4 +1,4 @@
-# egg-knex
+# @joyu/egg-knex
 
 [![NPM version][npm-image]][npm-url]
 [![Known Vulnerabilities][snyk-image]][snyk-url]
@@ -11,7 +11,7 @@
 [download-image]: https://img.shields.io/npm/dm/egg-knex.svg?style=flat-square
 [download-url]: https://npmjs.org/package/egg-knex
 
-Knex for egg framework.
+Knex for egg framework by joyu team.
 
 [Knex](http://knexjs.org/) is a "batteries included" SQL query builder for Postgres, MSSQL, MySQL, MariaDB, SQLite3, and Oracle. `Knex` compare to `ali-rds`:
 
@@ -23,7 +23,7 @@ Knex for egg framework.
 ## Installation
 
 ```bash
-$ npm i --save egg-knex
+$ npm i --save @joyu/egg-knex
 ```
 
 ## Configuration
