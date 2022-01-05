@@ -73,6 +73,11 @@ exports.knex = {
     },
     // connection pool
     pool: { min: 0, max: 5 },
+    /*dao config*/ 
+    // auto create table(need tableStruct in dao)
+    autoCreate: true,
+    // dao path
+    daoPath: 'app/dao'
     // acquire connection timeout, millisecond
     acquireConnectionTimeout: 30000,
   },
@@ -89,6 +94,29 @@ You can access to database instance by using:
 
 ```js
 app.knex;
+```
+
+### Create Dao
+```js
+module.exports = baseSqlDao => {
+  return class exampleDao extends baseSqlDao {
+    name = 'example';
+    table = 't_example';
+    tableStruct = {
+      column: {
+        // column
+        'id': 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+        'code': 'varchar(50) NOT NULL',
+      },
+      index: {
+        // index
+        'id': {'type': 'primary', 'using': 'BTREE'},
+        'code': {'type': 'unique', 'name': 'AK_Key_2', 'using': 'BTREE'}
+      },
+      otherConfig: 'ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC'
+    };
+  };
+};
 ```
 
 ### CURD

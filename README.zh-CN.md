@@ -85,6 +85,11 @@ exports.mysql = {
       min: 0,
       max: 20,
     },
+    /*dao相关配置*/ 
+    // 是否自动创建表（需要配置tableStruct）
+    autoCreate: true,
+    // dao的路径
+    daoPath: 'app/dao'
   },
   // 是否加载到 app 上，默认开启
   app: true,
@@ -162,6 +167,29 @@ postgres.raw(sql, values).then(...);
 ```
 
 ## CRUD
+
+### 创建DAO
+```js
+module.exports = baseSqlDao => {
+  return class exampleDao extends baseSqlDao {
+    name = 'example';
+    table = 't_example';
+    tableStruct = {
+      column: {
+        // 列
+        'id': 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+        'code': 'varchar(50) NOT NULL',
+      },
+      index: {
+        // 索引
+        'id': {'type': 'primary', 'using': 'BTREE'},
+        'code': {'type': 'unique', 'name': 'AK_Key_2', 'using': 'BTREE'}
+      },
+      otherConfig: 'ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC'
+    };
+  };
+};
+```
 
 ### Create
 
