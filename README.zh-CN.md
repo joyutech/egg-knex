@@ -170,8 +170,8 @@ postgres.raw(sql, values).then(...);
 
 ### 创建DAO
 ```js
-module.exports = baseSqlDao => {
-  return class exampleDao extends baseSqlDao {
+module.exports = dao => {
+  return class exampleDao extends dao {
     name = 'example';
     table = 't_example';
     db = 'db1'; // 可选参数，该dao所属的数据库连接，在多个client的情况下，dao中必须指定这个dao属于哪个数据库连接

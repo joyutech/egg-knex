@@ -98,8 +98,8 @@ app.knex;
 
 ### Create Dao
 ```js
-module.exports = baseSqlDao => {
-  return class exampleDao extends baseSqlDao {
+module.exports = dao => {
+  return class exampleDao extends dao {
     name = 'example';
     table = 't_example';
     db = 'db1'; // db is necessary in multiple database
