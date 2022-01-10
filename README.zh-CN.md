@@ -170,8 +170,8 @@ postgres.raw(sql, values).then(...);
 
 ### 创建DAO
 ```js
-module.exports = baseSqlDao => {
-  return class exampleDao extends baseSqlDao {
+module.exports = dao => {
+  return class exampleDao extends dao {
     name = 'example';
     table = 't_example';
     tableStruct = {
