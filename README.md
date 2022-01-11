@@ -102,7 +102,6 @@ module.exports = dao => {
   return class exampleDao extends dao {
     name = 'example';
     table = 't_example';
-    db = 'db1'; // db is necessary in multiple database
     tableStruct = {
       column: {
         // column

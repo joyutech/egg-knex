@@ -11,6 +11,12 @@ module.exports = app => {
       },
       pool: { min: 0, max: 5 },
       acquireConnectionTimeout: 30000,
+      loader: {
+        directory: 'app/dao',
+        delegate: 'dao',
+        // 是否自动创建表（需要配置tableStruct）
+        autoCreate: false,
+      },
     },
     app: true,
     agent: false,
@@ -23,7 +29,12 @@ module.exports = app => {
     //     user: 'user',
     //     password: 'password',
     //     database: 'database',
-    //   }
+    //   },
+    //   loader: {
+    //     directory: 'app/dao',
+    //     delegate: 'dao',
+    //     autoCreate: false,
+    //   },
     // },
     // multiple datebase instances
     // clients: {
@@ -36,6 +47,11 @@ module.exports = app => {
     //       password: 'password',
     //       database: 'database',
     //     },
+    //     loader: {
+    //       daoPath: 'app/dao/db1',
+    //       delegate: 'dao1',
+    //       autoCreate: false,
+    //     },
     //   },
     //   db2: {
     //     dialect: 'oracle',
@@ -45,6 +61,11 @@ module.exports = app => {
     //       user: 'user',
     //       password: 'password',
     //       database: 'database',
+    //     },
+    //     loader: {
+    //       daoPath: 'app/dao/db2',
+    //       delegate: 'dao2',
+    //       autoCreate: false,
     //     },
     //   },
     // },
