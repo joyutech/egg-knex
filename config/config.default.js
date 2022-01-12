@@ -12,7 +12,9 @@ module.exports = app => {
       pool: { min: 0, max: 5 },
       acquireConnectionTimeout: 30000,
       loader: {
+        // dao加载目录
         directory: 'app/dao',
+        // 挂载名
         delegate: 'dao',
         // 是否自动创建表（需要配置tableStruct）
         autoCreate: false,
