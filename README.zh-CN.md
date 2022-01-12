@@ -20,76 +20,72 @@ Knex Plugin 为 egg 提供 [Knex](http://knexjs.org/) 的功能，Knex 支持 Po
 > 3. 支持的方法多，社区驱动，插件多
 > 4. 链式调用，支持 `stream`
 
-## 使用
+## 安装
+
+```bash
+$ npm i --save @joyu/egg-knex
+```
+
+## 配置
+
+### 安装扩展依赖
+
+- 使用 `mysql` 默认支持，无需再安装额外依赖
+- 使用 `mysql2` 安装依赖 `npm i --save mysql2`
+- 使用 `mariadb` 安装依赖 `npm i --save mariasql`
+- 使用 `postgres` 安装依赖 `npm i --save pg`
+- 使用 `mssql` 安装依赖 `npm i --save mssql`
+- 使用 `oracledb` 安装依赖 `npm i --save oracledb`
+- 使用 `sqlite` 安装依赖 `npm i --save sqlite3`
+
+### 启用插件
 
 修改 `config/plugin.js` 启动创建:
 
 ```js
-config.knex = {
+exports.knex = {
   enable: true,
   package: "egg-knex",
 };
 ```
 
-- 使用 `mysql` 默认支持
-- 使用 `mariadb` 安装依赖 `tnpm i --save mariasql`
-- 使用 `postgres` 安装依赖 `tnpm i --save pg`
-- 使用 `mssql` 安装依赖 `tnpm i --save mssql`
-- 使用 `oracledb` 安装依赖 `tnpm i --save oracledb`
-- 使用 `sqlite` 安装依赖 `tnpm i --save sqlite3`
+### 添加配置
 
-config.js 配置数据库相关的信息：
+编辑 `${app_root}/config/config.${env}.js`:
 
-### 默认配置
+#### 单数据源配置 mysql
 
 ```js
 exports.knex = {
-  default: {
-    client: "mysql",
-    encryptPassword: true,
-    connection: {
-      database: null,
-    },
-    // 连接池
-    pool: { min: 0, max: 5 },
-    // 获取链接超时时间，单位：毫秒
-    acquireConnectionTimeout: 30000,
-  },
-  app: true,
-  agent: false,
-  keycenterDecryptKeyName: "",
-};
-```
-
-### mysql 单数据源
-
-```js
-exports.mysql = {
   // 数据库信息配置
   client: {
-    dialect: "mysql", // 使用的数据库类型
+    // 使用的数据库类型
+    dialect: "mysql",
     // 链接配置
     connection: {
       // host
-      host: "mysql",
+      host: "mysql.com",
       // 端口号
       port: 3306,
       // 用户名
       user: "mobile_pub",
       // 密码
-      password: "-123",
+      password: "mobile_pub",
       // 数据库名
       database: "mobile_pub",
     },
-    pool: {
-      min: 0,
-      max: 20,
+    // 连接池
+    pool: { min: 0, max: 5 },
+    // 获取链接超时时间，单位：毫秒
+    acquireConnectionTimeout: 30000,
+    loader: {
+      // dao加载目录
+      directory: 'app/dao',
+      // 挂载名
+      delegate: 'dao',
+      // 是否自动创建表（需要配置tableStruct）
+      autoCreate: false,
     },
-    /*dao相关配置*/ 
-    // 是否自动创建表（需要配置tableStruct）
-    autoCreate: true,
-    // dao的路径
-    daoPath: 'app/dao'
   },
   // 是否加载到 app 上，默认开启
   app: true,
@@ -98,7 +94,7 @@ exports.mysql = {
 };
 ```
 
-#### 使用方式
+##### 使用方式
 
 ```js
 const [users] = await app.knex.raw("select * from users where name like ?", [
@@ -106,16 +102,16 @@ const [users] = await app.knex.raw("select * from users where name like ?", [
 ]);
 ```
 
-### 多数据源 mysql + postgres + orcaledb
+#### 多数据源 mysql + postgres + orcaledb
 
 ```js
 exports.mysql = {
   clients: {
-    // clientId, 获取client实例，需要通过 app.mysql.get('clientId') 获取
-    mysql: {
-	  dialect: 'mysql',
-	  connection: {
-	    // host
+    // clientId, 获取client实例，需要通过 app.knex.get('clientId') 获取
+    db1: {
+      dialect: 'mysql',
+      connection: {
+        // host
         host: 'mysqlhost',
         // 端口号
         port: '3306',
@@ -125,20 +121,20 @@ exports.mysql = {
         password: '123456',
         // 数据库名
         database: 'test',
-	  },
+      },
     },
-	postgres: {
-	  dialect: 'postgres',
-	  connection: {
-	    ...
-	  }
-	},
-	oracle: {
-	  dialect: 'orcaledb',
-	  connection: {
-	  	...
-	  }
-	}
+    db2: {
+      dialect: 'postgres',
+      connection: {
+        ...
+      }
+    },
+    db3: {
+      dialect: 'orcaledb',
+      connection: {
+        ...
+      }
+    }
 
     // ...
   },
@@ -155,7 +151,7 @@ exports.mysql = {
 };
 ```
 
-#### 使用
+##### 使用方式
 
 ```js
 const mysql = app.knex.get('mysql');
@@ -166,12 +162,10 @@ const oracle = app.knex.get('oracle');
 postgres.raw(sql, values).then(...);
 ```
 
-## CRUD
-
 ### 创建DAO
 ```js
-module.exports = dao => {
-  return class exampleDao extends dao {
+module.exports = Dao => {
+  class exampleDao extends Dao {
     name = 'example';
     table = 't_example';
     tableStruct = {
@@ -188,8 +182,12 @@ module.exports = dao => {
       otherConfig: 'ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC'
     };
   };
+  
+  return exampleDao;
 };
 ```
+
+## CRUD
 
 ### Create
 
@@ -198,7 +196,10 @@ module.exports = dao => {
 #### 单个
 
 ```js
-const [id] = await app.knex.insert({ name: "foo" }, "id").into("users");
+const result = await app.knex
+  .insert({ name: "张三" })
+  .into("users");
+  const insertSuccess = result === 1;
 ```
 
 #### 批量
@@ -207,9 +208,12 @@ const [id] = await app.knex.insert({ name: "foo" }, "id").into("users");
 const result = await app.knex
   .insert([{ name: "张三" }, { name: "李四" }], "id")
   .into("users");
+const insertSuccess = result === 1;
 ```
 
-> mysql, sqlite, oracle 批量插入的时候仅返回插入的数量, 若具体业务需要返回 id , 可以使用 `knex` 提供的 [`batchInsert`](http://knexjs.org/#Utility-BatchInsert) 方法, 会在一个事务中逐条插入。
+> mysql, sqlite, oracle 批量插入的时候仅返回插入的数量, 若具体业务需要返回 id , 
+> 可以使用 `knex` 提供的 [`batchInsert`](http://knexjs.org/#Utility-BatchInsert) 方法, 
+> 会在一个事务中逐条插入。
 
 ### Read
 
@@ -284,6 +288,72 @@ const result = await app.knex.transaction(async function transacting(trx) {
 
 ## 进阶
 
+### 多数据库实例: mysql + postgres + oracledb
+
+安装依赖:
+
+```bash
+$ npm i --save pg orcaledb
+```
+
+添加配置:
+
+```js
+exports.knex = {
+  clients: {
+    // clientId, access the client instance by app.knex.get('mysql')
+    mysql: {
+      dialect: 'mysql',
+      connection: {
+        // host
+        host: 'mysql.com',
+        // port
+        port: '3306',
+        // username
+        user: 'mobile_pub',
+        // password
+        password: 'password',
+        // database
+        database: 'mobile_pub',
+      },
+      postgres: {
+        dialect: 'postgres',
+        connection: {
+          ...
+        }
+      },
+      oracle: {
+        dialect: 'oracledb',
+        connection: {
+          ...
+        }
+      }
+    },
+    // ...
+  },
+  // default configuration for all databases
+  default: {
+  },
+  // load into app, default is open
+  app: true,
+  // load into agent, default is close
+  agent: false,
+};
+```
+
+使用:
+
+```js
+const mysql = app.knex.get("mysql");
+mysql.raw(sql);
+
+const pg = app.knex.get("postgres");
+pg.raw(sql);
+
+const oracle = app.knex.get("oracle");
+oracle.raw(sql);
+```
+
 ### 自定义 SQL 拼接
 
 - mysql
@@ -317,6 +387,12 @@ const result = await app.knex.raw(
 );
 ```
 
+>
+
+### 原始SQL调用
+
+如果你想在 mysql 中调用语句或函数，你可以使用 `raw`。
+
 #### 内置表达式
 
 - CURRENT_TIMESTAMP(): 数据库当前系统时间戳，通过`app.knex.fn.now()`获取。
@@ -338,10 +414,12 @@ await app.knex
 ```js
 const first = "James";
 const last = "Bond";
-await app.knex(table).insert({
-  id: 123,
-  fullname: app.knex.raw(`CONCAT("${first}", "${last}"`),
-});
+await app.knex
+  .insert({
+    id: 123,
+    fullname: app.knex.raw(`CONCAT("${first}", "${last}"`),
+  })
+  .into(table);
 
 // INSERT INTO `$table`(`id`, `fullname`) VALUES(123, CONCAT("James", "Bond"))
 ```

@@ -53,12 +53,14 @@ exports.knex = {
 
 Edit `${app_root}/config/config.${env}.js`:
 
+#### Single data source configuration mysql
+
 ```js
 exports.knex = {
-  // database configuration
   client: {
-    // database dialect
+    // database type
     dialect: "mysql",
+    // link option
     connection: {
       // host
       host: "mysql.com",
@@ -67,19 +69,22 @@ exports.knex = {
       // username
       user: "mobile_pub",
       // password
-      password: "password",
+      password: "mobile_pub",
       // database
       database: "mobile_pub",
     },
     // connection pool
     pool: { min: 0, max: 5 },
-    /*dao config*/ 
-    // auto create table(need tableStruct in dao)
-    autoCreate: true,
-    // dao path
-    daoPath: 'app/dao'
     // acquire connection timeout, millisecond
     acquireConnectionTimeout: 30000,
+    loader: {
+      // dao load directory
+      directory: 'app/dao',
+      // mount name
+      delegate: 'dao',
+      // auto create table(need tableStruct in dao)
+      autoCreate: false,
+    },
   },
   // load into app, default is open
   app: true,
@@ -88,18 +93,78 @@ exports.knex = {
 };
 ```
 
-## Usage
-
-You can access to database instance by using:
+##### Usage
 
 ```js
-app.knex;
+const [users] = await app.knex.raw("select * from users where name like ?", [
+  "hello%",
+]);
+```
+
+#### Multiple data sources mysql + postgres + orcaledb
+
+```js
+exports.mysql = {
+  clients: {
+    // clientId, get client instance，to get like app.knex.get('clientId')
+    db1: {
+      dialect: 'mysql',
+      connection: {
+        // host
+        host: 'mysqlhost',
+        // port
+        port: '3306',
+        // username
+        user: 'db',
+        // password
+        password: '123456',
+        // database
+        database: 'test',
+      },
+    },
+    db2: {
+      dialect: 'postgres',
+      connection: {
+        ...
+      }
+    },
+    db3: {
+      dialect: 'orcaledb',
+      connection: {
+        ...
+      }
+    }
+
+    // ...
+  },
+  // default configuration by all databases
+  default: {
+    // enable encrypted password
+    encryptPassword: true,
+  },
+
+  // load into app, default is open
+  app: true,
+  // load into agent, default is close
+  agent: false,
+};
+```
+
+##### Usage
+
+```js
+const mysql = app.knex.get('mysql');
+mysql.raw(sql, values).then(...);
+const postgres = app.knex.get('postgres');
+postgres.raw(sql, values).then(...);
+const oracle = app.knex.get('oracle');
+postgres.raw(sql, values).then(...);
 ```
 
 ### Create Dao
 ```js
 module.exports = dao => {
-  return class exampleDao extends dao {
+  class exampleDao extends dao {
     name = 'example';
     table = 't_example';
     tableStruct = {
@@ -116,16 +181,32 @@ module.exports = dao => {
       otherConfig: 'ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC'
     };
   };
+  
+  return exampleDao;
 };
 ```
 
-### CURD
+## CRUD
 
-#### Create
+### Create
+
+[document](http://knexjs.org/#Builder-insert)
+
+#### Single
 
 ```js
-// insert
-const result = await app.knex.insert({ title: "Hello World" }).into("posts");
+const result = await app.knex
+  .insert({ title: "LiLei" })
+  .into("posts");
+const insertSuccess = result === 1;
+```
+
+#### Batch
+
+```js
+const result = await app.knex
+  .insert([{ name: "LiLei" }, { name: "Jams" }], "id")
+  .into("users");
 const insertSuccess = result === 1;
 ```
 
@@ -133,7 +214,7 @@ const insertSuccess = result === 1;
 > you can choose [`batchInsert`](http://knexjs.org/#Utility-BatchInsert),
 > it will insert raws one by one in a transaction.
 
-#### Read
+### Read
 
 ```js
 // get one
@@ -156,7 +237,7 @@ const results = await app
   .select("posts.*", "groups.name");
 ```
 
-#### Update
+### Update
 
 ```js
 const row = {
@@ -171,17 +252,17 @@ const affectedRowsCount = await app.knex("posts").update({ row }).where(id, 1);
 // affectedRowsCount equals 1
 ```
 
-#### Delete
+### Delete
 
 ```js
 const affectedRows = await app.knex("table").where({ name: "fengmk2" }).del();
 ```
 
-### Transaction
+## Transaction
 
 `egg-knex` support manual/auto commit.
 
-#### Manual commit
+### Manual commit
 
 ```js
 const trx = await app.knex.transaction();
@@ -195,7 +276,7 @@ try {
 }
 ```
 
-#### Auto commit
+### Auto commit
 
 ```js
 const result = await app.knex.transaction(async function transacting(trx) {
@@ -317,11 +398,13 @@ If you want to call literals or functions in mysql , you can use `raw`.
 - CURRENT_TIMESTAMP(): The database system current timestamp, you can obtain by `app.knex.fn.now()`.
 
 ```js
-await app.knex.insert(, {
-  create_time: app.knex.fn.now()
-}).into(table);
+await app.knex
+  .insert({
+    create_time: app.knex.fn.now(),
+  })
+  .into(table);
 
-// INSERT INTO `$table`(`create_time`) VALUES(NOW())
+// INSERT INTO `$table`(`create_time`) VALUES(CURRENT_TIMESTAMP())
 ```
 
 #### Custom literal
