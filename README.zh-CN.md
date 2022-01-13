@@ -169,17 +169,18 @@ module.exports = Dao => {
     name = 'example';
     table = 't_example';
     tableStruct = {
+      // 字段
       column: {
-        // 列
-        'id': 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-        'code': 'varchar(50) NOT NULL',
+        id: 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+        code: 'varchar(50) NOT NULL',
       },
+      // 索引
       index: {
-        // 索引
-        'id': {'type': 'primary', 'using': 'BTREE'},
-        'code': {'type': 'unique', 'name': 'AK_Key_2', 'using': 'BTREE'}
+        id: { type: 'primary', key: 'id', using: 'BTREE' },
+        i_code_type: { type: 'unique', key: [ 'code', 'type' ], using: 'BTREE' },
       },
-      otherConfig: 'ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC'
+      // 表选项
+      option: 'ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC'
     };
   };
   

@@ -168,17 +168,18 @@ module.exports = dao => {
     name = 'example';
     table = 't_example';
     tableStruct = {
+      // field
       column: {
-        // column
-        'id': 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-        'code': 'varchar(50) NOT NULL',
+        id: 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+        code: 'varchar(50) NOT NULL',
       },
+      // index
       index: {
-        // index
-        'id': {'type': 'primary', 'using': 'BTREE'},
-        'code': {'type': 'unique', 'name': 'AK_Key_2', 'using': 'BTREE'}
+        id: { type: 'primary', key: 'id', using: 'BTREE' },
+        i_code_type: { type: 'unique', key: [ 'code', 'type' ], using: 'BTREE' },
       },
-      otherConfig: 'ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC'
+      // table option
+      option: 'ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC'
     };
   };
   
