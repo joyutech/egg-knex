@@ -1,6 +1,6 @@
 {
   "name": "@joyu/egg-knex",
-  "version": "3.1.3",
+  "version": "3.1.4",
   "description": "knex plugin for egg by joyu team",
   "eggPlugin": {
     "name": "knex"
