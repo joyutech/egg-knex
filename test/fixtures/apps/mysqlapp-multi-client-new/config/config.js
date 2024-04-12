@@ -9,9 +9,9 @@ exports.knex = {
       connection: {
         host: '127.0.0.1',
         port: 3306,
-        user: 'root',
-        database: 'test',
-        password: 'longbridge'
+        user: 'knextest',
+        password: 'knextest',
+        database: 'knextest',
       },
     },
     db2: {
@@ -19,9 +19,9 @@ exports.knex = {
       connection: {
         host: '127.0.0.1',
         port: 3306,
-        user: 'root',
-        database: 'test',
-        password: 'longbridge'
+        user: 'knextest',
+        password: 'knextest',
+        database: 'knextest',
       },
     },
     db3: {
@@ -29,9 +29,9 @@ exports.knex = {
       connection: {
         host: '127.0.0.1',
         port: 3306,
-        user: 'root',
-        database: 'test',
-        password: 'longbridge'
+        user: 'knextest',
+        password: 'knextest',
+        database: 'knextest',
       },
     },
   },

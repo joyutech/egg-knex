@@ -9,9 +9,9 @@ exports.knex = {
       connection: {
         host: '127.0.0.1',
         port: 3306,
-        user: 'root',
+        user: 'knextest',
         password: '23234',
-        database: 'test',
+        database: 'knextest',
       },
     },
     {
@@ -19,9 +19,9 @@ exports.knex = {
       connection: {
         host: '127.0.0.1',
         port: 3306,
-        user: 'root',
+        user: 'knextest',
         password: '345345',
-        database: 'test',
+        database: 'knextest',
       },
     },
     {
@@ -29,9 +29,9 @@ exports.knex = {
       connection: {
         host: '127.0.0.1',
         port: 3306,
-        user: 'root',
+        user: 'knextest',
         password: 'admin',
-        database: 'test',
+        database: 'knextest',
       },
     },
   ],

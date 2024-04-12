@@ -5,7 +5,7 @@ exports.keys = "i7oBLQc43aiDCC9zxYrYNw==";
 exports.knex = {
   client: {
     dialect: "mysql2",
-    connection: "mysql://root:longbridge@localhost/test"
+    connection: "mysql://knextest:knextest@localhost/knextest",
   },
-  agent: true
+  agent: true,
 };
