@@ -16,7 +16,7 @@ describe('test/multiclient.test.js', () => {
     before(done => {
       app = mm.app({
         baseDir: 'apps/mysqlapp-multi-client-new',
-        plugin: 'knex',
+        plugin: true,
       });
       app.ready(done);
     });

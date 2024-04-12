@@ -18,7 +18,7 @@ describe('test/knex.test.js', () => {
   before(async function () {
     app = mm.app({
       baseDir: 'apps/mysqlapp',
-      plugin: 'knex',
+      plugin: true,
     });
     await app.ready();
 
@@ -133,7 +133,7 @@ describe('test/knex.test.js', () => {
     mm(process.env, 'EGG_LOG', 'NONE');
     const app = mm.app({
       baseDir: 'apps/mysqlapp-multi-client-wrong',
-      plugin: 'knex',
+      plugin: true,
     });
 
     app.ready(err => {
@@ -145,7 +145,7 @@ describe('test/knex.test.js', () => {
   it('should agent.mysql work', done => {
     const app = mm.cluster({
       baseDir: 'apps/mysqlapp-agent',
-      plugin: 'knex',
+      plugin: true,
     });
     app.ready(() => {
       app.close();
@@ -158,7 +158,7 @@ describe('test/knex.test.js', () => {
   it('should disable app work', done => {
     const app = mm.app({
       baseDir: 'apps/mysqlapp-disable',
-      plugin: 'knex',
+      plugin: true,
     });
     app.ready(() => {
       should.not.exist(app.mysql);
@@ -255,7 +255,7 @@ describe('test/knex.test.js', () => {
     before(done => {
       app = mm.cluster({
         baseDir: 'apps/mysqlapp-new',
-        plugin: 'knex',
+        plugin: true,
       });
       app.ready(done);
     });
@@ -284,7 +284,7 @@ describe('test/knex.test.js', () => {
     before(done => {
       app = mm.cluster({
         baseDir: 'apps/mysqlapp-dynamic',
-        plugin: 'mysql',
+        plugin: true,
       });
       app.ready(done);
     });
@@ -313,7 +313,7 @@ describe('test/knex.test.js', () => {
     before(done => {
       app = mm.cluster({
         baseDir: 'apps/mysqlapp-connectstring',
-        plugin: 'knex',
+        plugin: true,
       });
       app.ready(done);
     });
