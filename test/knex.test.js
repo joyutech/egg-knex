@@ -144,7 +144,7 @@ describe('test/knex.test.js', () => {
 
   it('should agent.mysql work', done => {
     const app = mm.cluster({
-      baseDir: 'apps/mysqlapp',
+      baseDir: 'apps/mysqlapp-agent',
       plugin: 'knex',
     });
     app.ready(() => {
