@@ -756,4 +756,12 @@ describe('test/dao.test.js', () => {
       results.should.be.an.Array().and.be.empty();
     });
   });
+
+  describe('dao.getTable', () => {
+    it('should return right tableName', async () => {
+      const userDao = app.dao.user;
+      const tableName = userDao.getTable();
+      tableName.should.be.equal('t_user');
+    });
+  });
 });
